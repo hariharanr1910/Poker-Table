@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Poker Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #0f1115;
+  color: #e6e6e6;
+}
+
+.app {
+  max-width: 600px;
+  margin: auto;
+  padding: 16px;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+header h1 {
+  font-size: 1.4rem;
+  margin: 0 0 10px;
+}
+
+/* Stage button (TOP) */
+.stage-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  border: none;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.stage-btn:active {
+  opacity: 0.9;
+}
+
+.hand {
+  margin-top: 8px;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+/* Setup */
+.setup {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.setup input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #1f2937;
+  color: #fff;
+}
+
+.setup button {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Players */
+.players {
+  background: #151923;
+  border-radius: 14px;
+  padding: 10px;
+}
+
+.player {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #232838;
+}
+
+.player:last-child {
+  border-bottom: none;
+}
+
+.player label {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 12px;
+}
+
+.player input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+}
+
+.name {
+  font-size: 1.05rem;
+}
+
+.role {
+  font-size: 0.8rem;
+  color: #fbbf24;
+  margin-right: 12px;
+}
+
+.wins {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* Role highlights */
+.dealer { background: rgba(251, 191, 36, 0.08); }
+.sb     { background: rgba(59, 130, 246, 0.08); }
+.bb     { background: rgba(239, 68, 68, 0.08); }
+
+/* Actions */
+.actions {
+  margin-top: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+button.confirm {
+  padding: 14px;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: none;
+  background: #16a34a;
+  color: #fff;
+  cursor: pointer;
+}
+
+button.undo {
+  padding: 14px;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: none;
+  background: #374151;
+  color: #e5e7eb;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <header>
+    <h1>Texas Hold’em Tracker</h1>
+
+    <!-- ONE TOP BUTTON FOR STAGES -->
+    <button class="stage-btn" onclick="nextStage()">
+      Stage: <span id="stage"></span>
+    </button>
+
+    <div class="hand">
+      Hand #<span id="handNum">1</span>
+    </div>
+  </header>
+
+  <section class="setup">
+    <input id="playerName" placeholder="Player name" />
+    <button onclick="addPlayer()">Add Player</button>
+  </section>
+
+  <section class="players"></section>
+
+  <section class="actions">
+    <button class="confirm" onclick="confirmWinners()">Confirm Winner(s)</button>
+    <button class="undo" onclick="undoLastHand()">Undo Last Hand</button>
+  </section>
+
+</div>
+
+<script>
+/* ---------- Game Logic ---------- */
+
+const stages = [
+  "Pre-Flop (Hole Cards)",
+  "Small Blind / Big Blind",
+  "Burn",
+  "Flop",
+  "Burn",
+  "Turn",
+  "Burn",
+  "River",
+  "Showdown"
+];
+
+let players = [];
+let dealerIndex = 0;
+let handNumber = 1;
+let stageIndex = 0;
+let history = [];
+
+/* Load */
+function loadGame() {
+  const data = JSON.parse(localStorage.getItem("pokerGame"));
+  if (!data) return;
+  players = data.players || [];
+  dealerIndex = data.dealerIndex || 0;
+  handNumber = data.handNumber || 1;
+  stageIndex = data.stageIndex || 0;
+  history = data.history || [];
+}
+
+/* Save */
+function saveGame() {
+  localStorage.setItem("pokerGame", JSON.stringify({
+    players,
+    dealerIndex,
+    handNumber,
+    stageIndex,
+    history
+  }));
+}
+
+/* Add Player */
+function addPlayer() {
+  const input = document.getElementById("playerName");
+  const name = input.value.trim();
+  if (!name) return;
+  players.push({ name, wins: 0 });
+  input.value = "";
+  saveGame();
+  render();
+}
+
+/* Confirm Winners */
+function confirmWinners() {
+  const checked = [...document.querySelectorAll("input[type=checkbox]:checked")]
+    .map(cb => parseInt(cb.dataset.index));
+
+  if (checked.length === 0) return;
+
+  checked.forEach(i => players[i].wins++);
+
+  history.push({
+    winners: checked,
+    dealerIndex,
+    stageIndex
+  });
+
+  dealerIndex = (dealerIndex + 1) % players.length;
+  handNumber++;
+  stageIndex = 0;
+
+  saveGame();
+  render();
+}
+
+/* Undo */
+function undoLastHand() {
+  if (history.length === 0) return;
+  const last = history.pop();
+  last.winners.forEach(i => players[i].wins--);
+  dealerIndex = last.dealerIndex;
+  stageIndex = last.stageIndex;
+  handNumber--;
+  saveGame();
+  render();
+}
+
+/* Stage Cycle */
+function nextStage() {
+  stageIndex = (stageIndex + 1) % stages.length;
+  saveGame();
+  render();
+}
+
+/* Render */
+function render() {
+  document.getElementById("handNum").innerText = handNumber;
+  document.getElementById("stage").innerText = stages[stageIndex];
+
+  const list = document.querySelector(".players");
+  list.innerHTML = "";
+
+  players.forEach((p, i) => {
+    let role = "";
+    if (i === dealerIndex) role = "Dealer";
+    else if (i === (dealerIndex + 1) % players.length) role = "SB";
+    else if (i === (dealerIndex + 2) % players.length) role = "BB";
+
+    list.innerHTML += `
+      <div class="player ${role.toLowerCase()}">
+        <label>
+          <input type="checkbox" data-index="${i}">
+          <span class="name">${p.name}</span>
+        </label>
+        <span class="role">${role}</span>
+        <span class="wins">Wins: ${p.wins}</span>
+      </div>
+    `;
+  });
+}
+
+/* Start */
+loadGame();
+render();
+</script>
+</body>
+</html>
