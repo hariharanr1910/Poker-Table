@@ -92,6 +92,7 @@ header h1 {
 .player {
   display: flex;
   align-items: center;
+  gap: 12px; /* spacing between items */
   padding: 12px;
   border-bottom: 1px solid #232838;
 }
@@ -119,7 +120,6 @@ header h1 {
 .role {
   font-size: 0.8rem;
   color: #fbbf24;
-  margin-right: 12px;
 }
 
 .wins {
@@ -132,7 +132,7 @@ header h1 {
 .sb     { background: rgba(59, 130, 246, 0.08); }
 .bb     { background: rgba(239, 68, 68, 0.08); }
 
-/* Actions */
+/* Action buttons */
 .actions {
   margin-top: 16px;
   display: grid;
@@ -158,6 +158,27 @@ button.undo {
   color: #e5e7eb;
   cursor: pointer;
 }
+
+button.reset {
+  padding: 14px;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: none;
+  background: #dc2626;
+  color: #fff;
+  cursor: pointer;
+}
+
+button.remove-player {
+  background: #b91c1c;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-left: 8px; /* extra space from Wins */
+}
 </style>
 </head>
 
@@ -167,7 +188,6 @@ button.undo {
   <header>
     <h1>Texas Hold’em Tracker</h1>
 
-    <!-- ONE TOP BUTTON FOR STAGES -->
     <button class="stage-btn" onclick="nextStage()">
       Stage: <span id="stage"></span>
     </button>
@@ -187,13 +207,12 @@ button.undo {
   <section class="actions">
     <button class="confirm" onclick="confirmWinners()">Confirm Winner(s)</button>
     <button class="undo" onclick="undoLastHand()">Undo Last Hand</button>
+    <button class="reset" onclick="resetGame()">Reset Game</button>
   </section>
 
 </div>
 
 <script>
-/* ---------- Game Logic ---------- */
-
 const stages = [
   "Pre-Flop (Hole Cards)",
   "Small Blind / Big Blind",
@@ -212,7 +231,6 @@ let handNumber = 1;
 let stageIndex = 0;
 let history = [];
 
-/* Load */
 function loadGame() {
   const data = JSON.parse(localStorage.getItem("pokerGame"));
   if (!data) return;
@@ -223,7 +241,6 @@ function loadGame() {
   history = data.history || [];
 }
 
-/* Save */
 function saveGame() {
   localStorage.setItem("pokerGame", JSON.stringify({
     players,
@@ -234,7 +251,6 @@ function saveGame() {
   }));
 }
 
-/* Add Player */
 function addPlayer() {
   const input = document.getElementById("playerName");
   const name = input.value.trim();
@@ -245,20 +261,21 @@ function addPlayer() {
   render();
 }
 
-/* Confirm Winners */
+function removePlayer(index) {
+  if (!confirm(`Remove player "${players[index].name}"?`)) return;
+  players.splice(index, 1);
+  if (dealerIndex >= players.length) dealerIndex = 0;
+  saveGame();
+  render();
+}
+
 function confirmWinners() {
   const checked = [...document.querySelectorAll("input[type=checkbox]:checked")]
     .map(cb => parseInt(cb.dataset.index));
-
   if (checked.length === 0) return;
 
   checked.forEach(i => players[i].wins++);
-
-  history.push({
-    winners: checked,
-    dealerIndex,
-    stageIndex
-  });
+  history.push({ winners: checked, dealerIndex, stageIndex });
 
   dealerIndex = (dealerIndex + 1) % players.length;
   handNumber++;
@@ -268,7 +285,6 @@ function confirmWinners() {
   render();
 }
 
-/* Undo */
 function undoLastHand() {
   if (history.length === 0) return;
   const last = history.pop();
@@ -280,14 +296,23 @@ function undoLastHand() {
   render();
 }
 
-/* Stage Cycle */
+function resetGame() {
+  if (!confirm("Are you sure you want to reset the entire game?")) return;
+  players = [];
+  dealerIndex = 0;
+  handNumber = 1;
+  stageIndex = 0;
+  history = [];
+  saveGame();
+  render();
+}
+
 function nextStage() {
   stageIndex = (stageIndex + 1) % stages.length;
   saveGame();
   render();
 }
 
-/* Render */
 function render() {
   document.getElementById("handNum").innerText = handNumber;
   document.getElementById("stage").innerText = stages[stageIndex];
@@ -309,12 +334,12 @@ function render() {
         </label>
         <span class="role">${role}</span>
         <span class="wins">Wins: ${p.wins}</span>
+        <button class="remove-player" onclick="removePlayer(${i})">Remove</button>
       </div>
     `;
   });
 }
 
-/* Start */
 loadGame();
 render();
 </script>
