@@ -6,106 +6,154 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
+/* ================= FONTS ================= */
+@font-face {
+  font-family: "Mattone";
+  src: url("./fonts/Mattone-Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ClashDisplay";
+  src: url("./fonts/ClashDisplay-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "CooperHewitt";
+  src: url("./fonts/CooperHewitt-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "CooperHewitt";
+  src: url("./fonts/CooperHewitt-Book.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "CooperHewitt";
+  src: url("./fonts/CooperHewitt-Semibold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* ================= BASE ================= */
 * {
   box-sizing: border-box;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
   margin: 0;
-  background: #0f1115;
+  background: #180e03;
   color: #e6e6e6;
+  font-family: CooperHewitt, system-ui, sans-serif;
 }
 
 .app {
-  max-width: 600px;
+  max-width: 900px;
   margin: auto;
   padding: 16px;
 }
 
-/* Header */
+/* ================= HEADER ================= */
 header {
   text-align: center;
-  margin-bottom: 14px;
+  margin-bottom: 22px;
 }
 
 header h1 {
-  font-size: 1.4rem;
-  margin: 0 0 10px;
+  font-family: Mattone, sans-serif;
+  font-size: 5rem;
+  margin: 0 0 16px;
+  color: #ffd737;
 }
 
-/* Stage button (TOP) */
+/* Stage button */
 .stage-btn {
-  width: 100%;
-  padding: 14px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  border: none;
-  color: #fff;
-  font-size: 1.05rem;
-  font-weight: 600;
+  width: 30%;
+  padding: 16px;
+  border-radius: 999px;
+  background: transparent;
+  border: 2px solid #76daff;
+  color: #76daff;
+  font-family: ClashDisplay, sans-serif;
+  font-size: 1.2rem;
   cursor: pointer;
-}
-
-.stage-btn:active {
-  opacity: 0.9;
+  margin: 0 auto;
 }
 
 .hand {
   margin-top: 8px;
-  color: #9ca3af;
   font-size: 0.9rem;
+  opacity: 0.75;
+  font-weight: 300;
 }
 
-/* Setup */
+/* ================= SETUP ================= */
 .setup {
   display: flex;
   gap: 10px;
-  margin: 16px 0;
+  margin: 18px 0;
 }
 
 .setup input {
   flex: 1;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 12px;
+  border-radius: 999px;
   border: none;
-  background: #1f2937;
+  background: #241503;
   color: #fff;
+  font-weight: 400;
 }
 
 .setup button {
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 12px 18px;
+  border-radius: 999px;
   border: none;
-  background: #2563eb;
+  background: #241503;
   color: #fff;
+  font-weight: 600;
   cursor: pointer;
 }
 
-/* Players */
+/* ================= MAIN ================= */
+.main {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+}
+
+/* ================= PLAYERS ================= */
 .players {
-  background: #151923;
-  border-radius: 14px;
-  padding: 10px;
+  background: #241503;
+  border-radius: 24px;
+  padding: 12px;
 }
 
 .player {
   display: flex;
   align-items: center;
-  gap: 12px; /* spacing between items */
-  padding: 12px;
-  border-bottom: 1px solid #232838;
+  gap: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  background: #180e03;
 }
 
 .player:last-child {
-  border-bottom: none;
+  margin-bottom: 0;
 }
 
 .player label {
   display: flex;
   align-items: center;
-  flex: 1;
   gap: 12px;
+  flex: 1;
 }
 
 .player input[type="checkbox"] {
@@ -114,70 +162,75 @@ header h1 {
 }
 
 .name {
+  font-weight: 400;
   font-size: 1.05rem;
 }
 
 .role {
-  font-size: 0.8rem;
+  font-weight: 600;
+  font-size: 0.75rem;
   color: #fbbf24;
 }
 
 .wins {
-  font-size: 0.8rem;
-  color: #9ca3af;
+  font-weight: 300;
+  font-size: 0.75rem;
+  opacity: 0.8;
 }
 
-/* Role highlights */
-.dealer { background: rgba(251, 191, 36, 0.08); }
-.sb     { background: rgba(59, 130, 246, 0.08); }
-.bb     { background: rgba(239, 68, 68, 0.08); }
-
-/* Action buttons */
+/* ================= ACTIONS ================= */
 .actions {
-  margin-top: 16px;
-  display: grid;
-  gap: 12px;
+  background: #241503;
+  border-radius: 24px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-button.confirm {
-  padding: 14px;
+.actions button {
+  padding: 16px;
+  border-radius: 999px;
   font-size: 1rem;
-  border-radius: 12px;
-  border: none;
-  background: #16a34a;
-  color: #fff;
+  font-weight: 600;
   cursor: pointer;
+  background: #180e03;
 }
 
-button.undo {
-  padding: 14px;
-  font-size: 1rem;
-  border-radius: 12px;
-  border: none;
-  background: #374151;
-  color: #e5e7eb;
-  cursor: pointer;
+.confirm {
+  color: #22c55e;
+  border: 2px solid #22c55e;
 }
 
-button.reset {
-  padding: 14px;
-  font-size: 1rem;
-  border-radius: 12px;
-  border: none;
-  background: #dc2626;
-  color: #fff;
-  cursor: pointer;
+.undo {
+  color: #9ca3af;
+  border: 2px solid #9ca3af;
 }
 
-button.remove-player {
+.reset {
+  color: #ef4444;
+  border: 2px solid #ef4444;
+}
+
+.remove-player {
   background: #b91c1c;
   border: none;
-  padding: 6px 10px;
-  border-radius: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
   color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 0.8rem;
-  margin-left: 8px; /* extra space from Wins */
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 700px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+  .stage-btn {
+    width: 100%;
+  }
 }
 </style>
 </head>
@@ -185,30 +238,27 @@ button.remove-player {
 <body>
 <div class="app">
 
-  <header>
-    <h1>Texas Hold’em Tracker</h1>
+<header>
+  <h1>Texas Hold’em</h1>
+  <button class="stage-btn" onclick="nextStage()">
+    <span id="stage"></span>
+  </button>
+  <div class="hand">Hand #<span id="handNum">1</span></div>
+</header>
 
-    <button class="stage-btn" onclick="nextStage()">
-      Stage: <span id="stage"></span>
-    </button>
+<section class="setup">
+  <input id="playerName" placeholder="Player name" />
+  <button onclick="addPlayer()">Add</button>
+</section>
 
-    <div class="hand">
-      Hand #<span id="handNum">1</span>
-    </div>
-  </header>
-
-  <section class="setup">
-    <input id="playerName" placeholder="Player name" />
-    <button onclick="addPlayer()">Add Player</button>
-  </section>
-
-  <section class="players"></section>
-
-  <section class="actions">
+<section class="main">
+  <div class="players"></div>
+  <div class="actions">
     <button class="confirm" onclick="confirmWinners()">Confirm Winner(s)</button>
-    <button class="undo" onclick="undoLastHand()">Undo Last Hand</button>
+    <button class="undo" onclick="undoLastHand()">Undo Hand</button>
     <button class="reset" onclick="resetGame()">Reset Game</button>
-  </section>
+  </div>
+</section>
 
 </div>
 
@@ -232,47 +282,40 @@ let stageIndex = 0;
 let history = [];
 
 function loadGame() {
-  const data = JSON.parse(localStorage.getItem("pokerGame"));
-  if (!data) return;
-  players = data.players || [];
-  dealerIndex = data.dealerIndex || 0;
-  handNumber = data.handNumber || 1;
-  stageIndex = data.stageIndex || 0;
-  history = data.history || [];
+  const d = JSON.parse(localStorage.getItem("pokerGame"));
+  if (!d) return;
+  players = d.players || [];
+  dealerIndex = d.dealerIndex || 0;
+  handNumber = d.handNumber || 1;
+  stageIndex = d.stageIndex || 0;
+  history = d.history || [];
 }
 
 function saveGame() {
   localStorage.setItem("pokerGame", JSON.stringify({
-    players,
-    dealerIndex,
-    handNumber,
-    stageIndex,
-    history
+    players, dealerIndex, handNumber, stageIndex, history
   }));
 }
 
 function addPlayer() {
-  const input = document.getElementById("playerName");
-  const name = input.value.trim();
-  if (!name) return;
-  players.push({ name, wins: 0 });
-  input.value = "";
-  saveGame();
-  render();
+  const i = document.getElementById("playerName");
+  if (!i.value.trim()) return;
+  players.push({ name: i.value.trim(), wins: 0 });
+  i.value = "";
+  saveGame(); render();
 }
 
-function removePlayer(index) {
-  if (!confirm(`Remove player "${players[index].name}"?`)) return;
-  players.splice(index, 1);
-  if (dealerIndex >= players.length) dealerIndex = 0;
-  saveGame();
-  render();
+function removePlayer(i) {
+  if (!confirm(`Remove ${players[i].name}?`)) return;
+  players.splice(i, 1);
+  dealerIndex %= players.length || 1;
+  saveGame(); render();
 }
 
 function confirmWinners() {
   const checked = [...document.querySelectorAll("input[type=checkbox]:checked")]
-    .map(cb => parseInt(cb.dataset.index));
-  if (checked.length === 0) return;
+    .map(c => +c.dataset.index);
+  if (!checked.length) return;
 
   checked.forEach(i => players[i].wins++);
   history.push({ winners: checked, dealerIndex, stageIndex });
@@ -281,41 +324,34 @@ function confirmWinners() {
   handNumber++;
   stageIndex = 0;
 
-  saveGame();
-  render();
+  saveGame(); render();
 }
 
 function undoLastHand() {
-  if (history.length === 0) return;
-  const last = history.pop();
-  last.winners.forEach(i => players[i].wins--);
-  dealerIndex = last.dealerIndex;
-  stageIndex = last.stageIndex;
+  if (!history.length) return;
+  const h = history.pop();
+  h.winners.forEach(i => players[i].wins--);
+  dealerIndex = h.dealerIndex;
+  stageIndex = h.stageIndex;
   handNumber--;
-  saveGame();
-  render();
+  saveGame(); render();
 }
 
 function resetGame() {
-  if (!confirm("Are you sure you want to reset the entire game?")) return;
-  players = [];
-  dealerIndex = 0;
-  handNumber = 1;
-  stageIndex = 0;
-  history = [];
-  saveGame();
-  render();
+  if (!confirm("Reset entire game?")) return;
+  players = []; dealerIndex = 0; handNumber = 1; stageIndex = 0; history = [];
+  saveGame(); render();
 }
 
 function nextStage() {
   stageIndex = (stageIndex + 1) % stages.length;
-  saveGame();
-  render();
+  saveGame(); render();
 }
 
 function render() {
   document.getElementById("handNum").innerText = handNumber;
-  document.getElementById("stage").innerText = stages[stageIndex];
+  document.getElementById("stage").innerText =
+    `${stageIndex + 1}. ${stages[stageIndex]}`;
 
   const list = document.querySelector(".players");
   list.innerHTML = "";
@@ -327,7 +363,7 @@ function render() {
     else if (i === (dealerIndex + 2) % players.length) role = "BB";
 
     list.innerHTML += `
-      <div class="player ${role.toLowerCase()}">
+      <div class="player">
         <label>
           <input type="checkbox" data-index="${i}">
           <span class="name">${p.name}</span>
@@ -343,5 +379,6 @@ function render() {
 loadGame();
 render();
 </script>
+
 </body>
 </html>
