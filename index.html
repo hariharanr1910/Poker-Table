@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
+/* ================= FONTS ================= */
 @font-face {
   font-family: "Mattone";
   src: url("./fonts/Mattone-Black.otf") format("opentype");
@@ -86,6 +87,14 @@ header h1 {
   margin: 0 auto;
 }
 
+.stage-arrow {
+  font-size: 1.6rem;
+  color: #76daff;
+  cursor: pointer;
+  user-select: none;
+  margin: 20px
+}
+
 .hand {
   margin-top: 8px;
   font-size: 0.9rem;
@@ -123,6 +132,7 @@ header h1 {
 /* ================= MAIN ================= */
 .main {
   display: grid;
+  align-items: flex-start;
   grid-template-columns: 2fr 1fr;
   gap: 16px;
 }
@@ -239,9 +249,11 @@ header h1 {
 
 <header>
   <h1>Texas Hold’em</h1>
-  <button class="stage-btn" onclick="nextStage()">
+	  <span class="stage-arrow" onclick="prevStage()">◀</span>
+  <button class="stage-btn">
     <span id="stage"></span>
   </button>
+	  <span class="stage-arrow" onclick="nextStage()">▶</span>
   <div class="hand">Hand #<span id="handNum">1</span></div>
 </header>
 
@@ -289,6 +301,8 @@ function loadGame() {
   stageIndex = d.stageIndex || 0;
   history = d.history || [];
 }
+
+
 
 function saveGame() {
   localStorage.setItem("pokerGame", JSON.stringify({
@@ -347,6 +361,11 @@ function nextStage() {
   saveGame(); render();
 }
 
+function prevStage() {
+  stageIndex = (stageIndex - 1 + stages.length) % stages.length;
+  saveGame(); render();
+}
+
 function render() {
   document.getElementById("handNum").innerText = handNumber;
   document.getElementById("stage").innerText =
@@ -381,4 +400,3 @@ render();
 
 </body>
 </html>
-
